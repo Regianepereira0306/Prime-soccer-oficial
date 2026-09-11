@@ -9,7 +9,7 @@
 <body>
 <header>
   <div class="logo">⚽ MINHA LOJA</div>
-  <nav><a href="#catalogo">Catálogo</a><a href="#adicionar">Adicionar camisa</a></nav>
+  <nav><a href="#catalogo">Catálogo</a><button id="adminLoginBtn" class="admin-link" type="button">Área do administrador</button></nav>
 </header>
 
 <section class="hero">
@@ -18,8 +18,18 @@
   <a class="btn" href="#catalogo">Ver catálogo</a>
 </section>
 
-<section id="adicionar" class="admin">
-  <h2>➕ Adicionar uma camisa</h2>
+<section id="loginAdmin" class="login-admin">
+  <h2>Área do administrador</h2>
+  <p>Digite a senha para abrir o painel de cadastro.</p>
+  <div class="login-row">
+    <input id="adminSenha" type="password" placeholder="Senha do administrador">
+    <button id="entrarAdmin" class="btn" type="button">Entrar</button>
+  </div>
+  <p id="loginStatus"></p>
+</section>
+
+<section id="adicionar" class="admin" style="display:none;">
+  <div class="admin-title"><h2>➕ Adicionar uma camisa</h2><button id="sairAdmin" class="filtro" type="button">Sair</button></div>
   <p class="ajuda">Escolha a foto, preencha os dados e clique no botão. A camisa aparecerá logo abaixo.</p>
   <div class="form">
     <label>Foto da camisa

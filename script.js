@@ -27,7 +27,7 @@ function render(){
    if(p.img){const im=document.createElement("img");im.src=p.img;foto.appendChild(im)}
    else {foto.innerHTML='<div class="semfoto">👕</div>'}
    const info=document.createElement("div"); info.className="info";
-   info.innerHTML=`<h3>${esc(p.nome)}</h3><div class="preco">R$ ${Number(p.preco).toFixed(2).replace(".",",")}</div><p class="detalhes">Tamanhos: ${esc(p.tamanhos)}</p><a class="whats" target="_blank" href="https://wa.me/5500000000000?text=${encodeURIComponent("Olá! Quero a camisa "+p.nome+" - R$ "+Number(p.preco).toFixed(2))}">Comprar pelo WhatsApp</a>`;
+   info.innerHTML=`<h3>${esc(p.nome)}</h3><div class="preco">R$ ${Number(p.preco).toFixed(2).replace(".",",")}</div><p class="detalhes">Tamanhos: ${esc(p.tamanhos)}</p><a class="whats" target="_blank" href="https://wa.me/558888963078?text=${encodeURIComponent("Olá! Quero a camisa "+p.nome+" - R$ "+Number(p.preco).toFixed(2))}">Comprar pelo WhatsApp</a>`;
    card.append(foto,info); area.appendChild(card);
  });
 }
@@ -58,3 +58,43 @@ document.getElementById("adicionarBtn").addEventListener("click",()=>{
 document.getElementById("busca").addEventListener("input",render);
 document.querySelectorAll(".filtro").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".filtro").forEach(x=>x.classList.remove("ativo"));b.classList.add("ativo");categoriaAtual=b.dataset.cat;render()}));
 render();
+const ADMIN_PASSWORD = 'PrimeSoccer2026';
+const loginAdmin = document.getElementById("loginAdmin");
+const adminPanel = document.getElementById("adicionar");
+const adminLoginBtn = document.getElementById("adminLoginBtn");
+const entrarAdmin = document.getElementById("entrarAdmin");
+const sairAdmin = document.getElementById("sairAdmin");
+const adminSenha = document.getElementById("adminSenha");
+const loginStatus = document.getElementById("loginStatus");
+
+function mostrarLogin() {
+  loginAdmin.style.display = "block";
+  loginAdmin.scrollIntoView({behavior:"smooth"});
+}
+
+function abrirAdmin() {
+  loginAdmin.style.display = "none";
+  adminPanel.style.setProperty("display", "block", "important");
+  adminPanel.scrollIntoView({behavior:"smooth"});
+}
+
+adminLoginBtn.addEventListener("click", mostrarLogin);
+
+entrarAdmin.addEventListener("click", () => {
+  if (adminSenha.value === ADMIN_PASSWORD) {
+    adminSenha.value = "";
+    loginStatus.textContent = "";
+    abrirAdmin();
+  } else {
+    loginStatus.textContent = "Senha incorreta.";
+  }
+});
+
+adminSenha.addEventListener("keydown", e => {
+  if (e.key === "Enter") entrarAdmin.click();
+});
+
+sairAdmin.addEventListener("click", () => {
+  adminPanel.style.setProperty("display", "none", "important");
+  loginAdmin.style.display = "block";
+});
