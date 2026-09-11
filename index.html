@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha Loja - Camisas de Futebol</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header>
+  <div class="logo">⚽ MINHA LOJA</div>
+  <nav><a href="#catalogo">Catálogo</a><a href="#adicionar">Adicionar camisa</a></nav>
+</header>
+
+<section class="hero">
+  <h1>Seu time. Sua camisa. Sua paixão.</h1>
+  <p>Camisas de futebol com pedido fácil pelo WhatsApp.</p>
+  <a class="btn" href="#catalogo">Ver catálogo</a>
+</section>
+
+<section id="adicionar" class="admin">
+  <h2>➕ Adicionar uma camisa</h2>
+  <p class="ajuda">Escolha a foto, preencha os dados e clique no botão. A camisa aparecerá logo abaixo.</p>
+  <div class="form">
+    <label>Foto da camisa
+      <input id="foto" type="file" accept="image/*">
+    </label>
+    <div id="preview"></div>
+    <label>Nome da camisa
+      <input id="nome" type="text" placeholder="Ex.: Flamengo 2026">
+    </label>
+    <label>Preço
+      <input id="preco" type="number" step="0.01" placeholder="99.90">
+    </label>
+    <label>Tamanhos
+      <input id="tamanhos" type="text" placeholder="P, M, G, GG">
+    </label>
+    <label>Categoria
+      <select id="categoria">
+        <option value="brasileiros">Brasileiros</option>
+        <option value="europeus">Europeus</option>
+        <option value="selecoes">Seleções</option>
+      </select>
+    </label>
+    <button id="adicionarBtn" class="btn" type="button">Adicionar ao catálogo</button>
+    <p id="status"></p>
+  </div>
+</section>
+
+<section id="catalogo" class="catalogo">
+  <div class="topo">
+    <div><h2>🔥 Catálogo</h2><p>Escolha sua camisa.</p></div>
+    <input id="busca" type="search" placeholder="🔎 Buscar camisa...">
+  </div>
+  <div class="filtros">
+    <button class="filtro ativo" data-cat="todos">Todos</button>
+    <button class="filtro" data-cat="brasileiros">Brasileiros</button>
+    <button class="filtro" data-cat="europeus">Europeus</button>
+    <button class="filtro" data-cat="selecoes">Seleções</button>
+  </div>
+  <div id="produtos" class="grid"></div>
+</section>
+
+<footer>© Minha Loja — Camisas de Futebol</footer>
+<script src="script.js"></script>
+</body>
+</html>
