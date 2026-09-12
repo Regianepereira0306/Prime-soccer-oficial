@@ -16,7 +16,7 @@ let categoriaAtual="todos";
 
 function render(){
  const busca=(document.getElementById("busca").value||"").toLowerCase();
- const lista=extras.map((p)=>({nome:p.nome,preco:p.preco,tamanhos:p.tamanhos,categoria:p.categoria,img:p.img,extra:true}))
+ const lista=extras.map((p)=>({nome:p.nome,preco:p.preco,tamanhos:p.tamanhos,categoria:p.categoria,img:p.img,imgs:p.imgs,extra:true}))
  .concat(padrao.map(p=>({nome:p[0],preco:p[1],tamanhos:p[2],categoria:p[3],extra:false})));
  const filtrada=lista.filter(p=>(categoriaAtual==="todos"||p.categoria===categoriaAtual)&&p.nome.toLowerCase().includes(busca));
  const area=document.getElementById("produtos");
@@ -50,7 +50,7 @@ document.getElementById("adicionarBtn").addEventListener("click",()=>{
  if(!preco){status.textContent="⚠️ Digite o preço.";return}
  extras.push({nome,preco,tamanhos:tamanhos||"P, M, G, GG",categoria,img});
  localStorage.setItem("minhaLojaProdutos",JSON.stringify(extras));
- document.getElementById("nome").value="";document.getElementById("preco").value="";document.getElementById("tamanhos").value="";document.getElementById("foto").value="";document.getElementById("preview").innerHTML="";delete document.getElementById("preview").dataset.img;
+ document.getElementById("nome").value="";document.getElementById("preco").value="";document.getElementById("tamanhos").value="";document.getElementById("foto").value="";document.getElementById("preview").innerHTML="";delete document.getElementById("preview").dataset.imgs;
  status.textContent="✅ Camisa adicionada! Ela já apareceu no catálogo.";
  render(); document.getElementById("catalogo").scrollIntoView({behavior:"smooth"});
 });
