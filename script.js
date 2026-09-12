@@ -24,8 +24,55 @@ function render(){
  filtrada.forEach(p=>{
    const card=document.createElement("article"); card.className="card";
    const foto=document.createElement("div"); foto.className="foto";
-   if(p.img){const im=document.createElement("img");im.src=p.img;foto.appendChild(im)}
-   else {foto.innerHTML='<div class="semfoto">👕</div>'}
+   const fotos=Array.isArray(p.imgs)?p.imgs:(p.img?[p.img]:[]);
+
+   if(fotos.length){
+     const galeria=document.createElement("div");
+     galeria.className="galeria";
+
+     fotos.forEach((src,i)=>{
+       const im=document.createElement("img");
+       im.src=src;
+       im.alt=p.nome;
+       if(i!==0) im.style.display="none";
+       galeria.appendChild(im);
+     });
+
+     if(fotos.length>1){
+       let atual=0;
+
+       const anterior=document.createElement("button");
+       anterior.className="galeria-btn anterior";
+       anterior.type="button";
+       anterior.textContent="‹";
+
+       const proxima=document.createElement("button");
+       proxima.className="galeria-btn proxima";
+       proxima.type="button";
+       proxima.textContent="›";
+
+       const contador=document.createElement("span");
+       contador.className="galeria-contador";
+       contador.textContent=`1/${fotos.length}`;
+
+       function mostrar(n){
+         atual=(n+fotos.length)%fotos.length;
+         galeria.querySelectorAll("img").forEach((img,i)=>{
+           img.style.display=i===atual?"block":"none";
+         });
+         contador.textContent=`${atual+1}/${fotos.length}`;
+       }
+
+       anterior.onclick=()=>mostrar(atual-1);
+       proxima.onclick=()=>mostrar(atual+1);
+
+       galeria.append(anterior,proxima,contador);
+     }
+
+     foto.appendChild(galeria);
+   }else{
+     foto.innerHTML='<div class="semfoto">👕</div>';
+   }
    const info=document.createElement("div"); info.className="info";
    info.innerHTML=`<h3>${esc(p.nome)}</h3><div class="preco">R$ ${Number(p.preco).toFixed(2).replace(".",",")}</div><p class="detalhes">Tamanhos: ${esc(p.tamanhos)}</p><a class="whats" target="_blank" href="https://wa.me/558888963078?text=${encodeURIComponent("Olá! Quero a camisa "+p.nome+" - R$ "+Number(p.preco).toFixed(2))}">Comprar pelo WhatsApp</a>`;
    card.append(foto,info); area.appendChild(card);
@@ -34,25 +81,66 @@ function render(){
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
 
 document.getElementById("foto").addEventListener("change",e=>{
- const f=e.target.files[0], prev=document.getElementById("preview");
- prev.innerHTML="";
- if(!f)return;
- const r=new FileReader();
- r.onload=()=>{const im=document.createElement("img");im.src=r.result;prev.appendChild(im);prev.dataset.img=r.result;document.getElementById("status").textContent="Foto escolhida. Agora clique em Adicionar ao catálogo."};
- r.readAsDataURL(f);
+  const files=[...e.target.files].slice(0,5);
+  const prev=document.getElementById("preview");
+  prev.innerHTML="";
+  delete prev.dataset.imgs;
+
+  if(!files.length)return;
+
+  let restantes=files.length;
+  const imagens=new Array(files.length);
+
+  files.forEach((f,i)=>{
+    const r=new FileReader();
+    r.onload=()=>{
+      imagens[i]=r.result;
+      restantes--;
+
+      if(restantes===0){
+        prev.dataset.imgs=JSON.stringify(imagens);
+        prev.innerHTML=imagens.map(src=>`<img src="${src}" alt="Prévia da camisa">`).join("");
+        document.getElementById("status").textContent=
+          `${imagens.length} foto(s) escolhida(s). Agora clique em Adicionar ao catálogo.`;
+      }
+    };
+    r.readAsDataURL(f);
+  });
 });
 
 document.getElementById("adicionarBtn").addEventListener("click",()=>{
- const nome=document.getElementById("nome").value.trim(), preco=document.getElementById("preco").value, tamanhos=document.getElementById("tamanhos").value.trim(), categoria=document.getElementById("categoria").value, img=document.getElementById("preview").dataset.img||"";
- const status=document.getElementById("status");
- if(!img){status.textContent="⚠️ Escolha uma foto primeiro.";return}
- if(!nome){status.textContent="⚠️ Digite o nome da camisa.";return}
- if(!preco){status.textContent="⚠️ Digite o preço.";return}
- extras.push({nome,preco,tamanhos:tamanhos||"P, M, G, GG",categoria,img});
- localStorage.setItem("minhaLojaProdutos",JSON.stringify(extras));
- document.getElementById("nome").value="";document.getElementById("preco").value="";document.getElementById("tamanhos").value="";document.getElementById("foto").value="";document.getElementById("preview").innerHTML="";delete document.getElementById("preview").dataset.imgs;
- status.textContent="✅ Camisa adicionada! Ela já apareceu no catálogo.";
- render(); document.getElementById("catalogo").scrollIntoView({behavior:"smooth"});
+  const nome=document.getElementById("nome").value.trim();
+  const preco=document.getElementById("preco").value;
+  const tamanhos=document.getElementById("tamanhos").value.trim();
+  const categoria=document.getElementById("categoria").value;
+  const status=document.getElementById("status");
+  const imgs=JSON.parse(document.getElementById("preview").dataset.imgs||"[]");
+
+  if(!imgs.length){status.textContent="⚠️ Escolha pelo menos uma foto.";return}
+  if(!nome){status.textContent="⚠️ Digite o nome da camisa.";return}
+  if(!preco){status.textContent="⚠️ Digite o preço.";return}
+
+  extras.push({
+    nome,
+    preco,
+    tamanhos:tamanhos||"P, M, G, GG",
+    categoria,
+    imgs,
+    img:imgs[0]
+  });
+
+  localStorage.setItem("minhaLojaProdutos",JSON.stringify(extras));
+
+  document.getElementById("nome").value="";
+  document.getElementById("preco").value="";
+  document.getElementById("tamanhos").value="";
+  document.getElementById("foto").value="";
+  document.getElementById("preview").innerHTML="";
+  delete document.getElementById("preview").dataset.imgs;
+
+  status.textContent="✅ Camisa adicionada! Ela já apareceu no catálogo.";
+  render();
+  document.getElementById("catalogo").scrollIntoView({behavior:"smooth"});
 });
 
 document.getElementById("busca").addEventListener("input",render);
